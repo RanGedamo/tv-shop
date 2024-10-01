@@ -16,6 +16,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Add main css file
 app.use(express.static(__dirname + '/public'));
 
+//Add assets folder
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
