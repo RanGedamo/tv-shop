@@ -3,14 +3,9 @@ const Product = require('../models/productModel');
 // יצירת מוצר חדש
 exports.createProduct = async (req, res) => {
   try {
-    const { name, price, screenType, description } = req.body;
+    const { name, price, screenType, description ,image} = req.body;
     
-    // בדיקה אם התמונה הועלתה
-    const image = req.file ? req.file.path : null;
 
-    if (!image) {
-      return res.status(400).json({ message: 'Image is required' });
-    }
 
     const product = new Product({
       name,
@@ -86,3 +81,19 @@ exports.getAveragePriceByScreenType = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+exports.filterProducts = async (req, res) => {
+  const minPrice = req.query.minPrice || 0;
+  const maxPrice = req.query.maxPrice || 99999;
+  const products = await Product.find({
+    price: { $gte: minPrice, $lte: maxPrice }
+  });
+  res.render('layouts/layout', {
+    title: 'Product List', 
+    body: '../pages/products', // הטמעת הדף של המוצרים ב-layout
+    products, 
+    minPrice,  
+    maxPrice    
+  });
+};
+

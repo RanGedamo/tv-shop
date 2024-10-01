@@ -8,7 +8,5 @@ router.post('/register', userController.register);
 // ראוט להתחברות משתמשים
 router.post('/login', userController.login);
 
-// // ראוט ליצירת אדמין
-// router.post('/create-admin', userController.createAdmin);
 
 module.exports = router;

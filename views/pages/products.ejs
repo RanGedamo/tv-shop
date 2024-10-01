@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .price-range {
+            width: 80%;
+            margin: 20px 0;
+        }
+        .price-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Product List</h1>
+
+        <!-- Range Slider Form -->
+        <form action="/products/filter" method="GET" class="form-inline">
+            <div class="form-group">
+                <label for="minPrice" class="form-label">Minimum Price</label>
+                <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Min Price" value="<%= minPrice || 0 %>">
+            </div>
+            <div class="form-group">
+                <label for="maxPrice" class="form-label">Maximum Price</label>
+                <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Max Price" value="<%= maxPrice || 10000 %>">
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Filter</button>
+          </form>
+          
+        <!-- Product Cards -->
+        <div class="row">
+            <% products.forEach(product => { %>
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img class="card-img-top" src="<%= product.image %>" alt="<%= product.name %>" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= product.name %></h5>
+                            <p class="card-text"><strong>Price:</strong> ₪<%= product.price %></p>
+                            <p class="card-text"><strong>Screen Type:</strong> <%= product.screenType %></p>
+                            <p class="card-text"><%= product.description %></p>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <!-- Include jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        function updateMinPrice(value) {
+          document.getElementById('minPriceValue').textContent = value;
+        }
+      
+        function updateMaxPrice(value) {
+          document.getElementById('maxPriceValue').textContent = value;
+        }
+      </script>
+</body>
+</html>

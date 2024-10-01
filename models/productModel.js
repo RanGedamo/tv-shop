@@ -15,10 +15,12 @@ const productSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    required: true,
   },
   image: {
-    type: String, // כאן נשמור את הנתיב של התמונה שהועלתה
-    required: true, // תמונה נדרשת
+    type: String,
+    required: true,
+  
   },
   createdAt: {
     type: Date,

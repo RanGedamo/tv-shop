@@ -17,8 +17,8 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // views //
-const homeRoutes = require('./routes/homeRoutes');
-app.use('/', homeRoutes); 
+const viewRoutes = require('./routes/viewRoutes');
+app.use('/', viewRoutes);
 // views //
 
 
