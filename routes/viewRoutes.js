@@ -7,5 +7,6 @@ router.get('/', viewController.getHomePage);
 router.get('/products', viewController.getProductsPage);
 router.get('/cart', viewController.getCartPage);
 router.get('/login', viewController.getLoginPage);
+router.get('/register', viewController.getRegisterPage);
 
 module.exports = router;

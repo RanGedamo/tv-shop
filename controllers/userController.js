@@ -104,6 +104,8 @@ exports.register = async (req, res) => {
 //     res.status(500).render('login', { errorMessage: 'An error occurred, please try again later' });
 //   }
 // };
+
+
 // exports.login = async (req, res) => {
 //   const { email, password } = req.body;
 

@@ -1,0 +1,209 @@
+
+/* cart */
+.mr-2{
+    margin-right: 20px;
+  }
+  
+  .divTable{
+      display: table;
+      width: 100%;
+  }
+  .rowTable {
+      display: table-row;
+  }
+  .divTableHeading {
+      display: table-header-group;
+  }
+  .divTableCol, .divTableHead {
+      border-bottom: 1px solid #eee;
+      display: table-cell;
+      padding: 3px 10px;
+  }
+  .divTableHeading {
+      background-color: #EEE;
+      display: table-header-group;
+      font-weight: bold;
+  }
+  .divTableFoot {
+      background-color: #EEE;
+      display: table-footer-group;
+      font-weight: bold;
+  }
+  .divTableBody {
+      display: table-row-group;
+  }
+
+/* index */
+.hero-section {
+    background-image: url('https://via.placeholder.com/1920x600'); /* כאן תוכל להכניס תמונת רקע של החנות שלך */
+    background-size: cover;
+    background-position: center;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: bold;
+}
+.hero-section p {
+    font-size: 1.5rem;
+}
+.products-section {
+    padding: 40px 0;
+}
+.products-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+.product-card {
+    transition: transform 0.3s ease;
+}
+.product-card:hover {
+    transform: scale(1.05);
+}
+.product-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* login */
+
+body {
+    background-color: #f7f8fa;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: auto;
+    margin-top: 100px;
+    padding: 15px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-control {
+    border-radius: 6px;
+}
+
+.btn-login {
+    width: 100%;
+    background-color: #007bff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.btn-login:hover {
+    background-color: #0056b3;
+}
+
+.forgot-password {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.forgot-password a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.register-link a {
+    color: #28a745;
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    margin-bottom: 20px;
+}
+
+/* products */
+
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.price-range {
+    width: 80%;
+    margin: 20px 0;
+}
+.price-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
+/* register */
+
+.register-container {
+    max-width: 400px;
+    margin: auto;
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.register-title {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.btn-register {
+    width: 100%;
+    background-color: #28a745;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.btn-register:hover {
+    background-color: #218838;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
