@@ -34,25 +34,34 @@
     <!-- /Navbar -->
   </header>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const token = localStorage.getItem('token');
-      const username = localStorage.getItem('username'); 
-
-      if (token && username) {
-        document.getElementById('user-info').style.display = 'block';
-        document.getElementById('logout').style.display = 'block';
-        document.getElementById('login-link').style.display = 'none';
-        document.getElementById('register-link').style.display = 'none';
-
-        const userInitial = username.charAt(0).toUpperCase();
-        document.getElementById('user-initial').textContent = userInitial;
-      } else {
-        document.getElementById('user-info').style.display = 'none';
-        document.getElementById('logout').style.display = 'none';
-        document.getElementById('login-link').style.display = 'block';
-        document.getElementById('register-link').style.display = 'block';
+  document.addEventListener('DOMContentLoaded', function () {
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username'); 
+  
+    const userInfo = document.getElementById('user-info');
+    const logout = document.getElementById('logout');
+    const loginLink = document.getElementById('login-link');
+    const registerLink = document.getElementById('register-link');
+    const userInitial = document.getElementById('user-initial');
+  
+    if (token && username) {
+      if (userInfo) userInfo.style.display = 'block';
+      if (logout) logout.style.display = 'block';
+      if (loginLink) loginLink.style.display = 'none';
+      if (registerLink) registerLink.style.display = 'none';
+  
+      if (userInitial) {
+        const initial = username.charAt(0).toUpperCase();
+        userInitial.textContent = initial;
       }
-    });
+    } else {
+      if (userInfo) userInfo.style.display = 'none';
+      if (logout) logout.style.display = 'none';
+      if (loginLink) loginLink.style.display = 'block';
+      if (registerLink) registerLink.style.display = 'block';
+    }
+  });
+  
 
     function logout() {
       localStorage.removeItem('token');

@@ -35,21 +35,33 @@
 
 /* index */
 .hero-section {
-    background-image: url('https://via.placeholder.com/1920x600'); /* כאן תוכל להכניס תמונת רקע של החנות שלך */
+    background-image: url('../assets/SiteImage.jpg'); /* כאן תוכל להכניס תמונת רקע של החנות שלך */
     background-size: cover;
     background-position: center;
-    height: 60vh;
+    height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
 }
 .hero-section h1 {
     font-size: 3.5rem;
     font-weight: bold;
+    font: 800 40px Arial;
+    -webkit-text-fill-color: white;
+    -webkit-text-stroke: 1.5px;
+    -webkit-text-stroke-color: black;
+    
 }
 .hero-section p {
     font-size: 1.5rem;
+    font: 600 33px Arial;
+    -webkit-text-fill-color: white;
+    -webkit-text-stroke: 1px;
+    -webkit-text-stroke-color: black;
 }
 .products-section {
     padding: 40px 0;
