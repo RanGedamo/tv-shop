@@ -46,3 +46,11 @@ exports.getProductsPage = async (req, res) => {
  
     });
 };
+
+exports.getRegisterPage = (req, res) => {
+  res.render('layouts/layout', { 
+    title: 'Registration', 
+    body: '../pages/register',
+    errorMessage: req.query.errorMessage || null // אם הודעת השגיאה קיימת ב-query
+  });
+};
