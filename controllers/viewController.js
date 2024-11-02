@@ -7,28 +7,39 @@ exports.getHomePage = (req, res) => {
  
     });
 };
-
+// בשרת
 exports.getLoginPage = (req, res) => {
-    res.render('layouts/layout', { 
-      title: 'Login Page', 
-      body: '../pages/login',
-      errorMessage: req.query.errorMessage || null // אם הודעת השגיאה קיימת ב-query
-    });
+  res.render('layouts/layout', { 
+    title: 'Login Page',
+    body: '../pages/login',
+    errorMessage: req.session.errorMessage || null,
+    successMessage: req.session.successMessage || null
+  });
+  req.session.errorMessage = null; // נקה את הודעת השגיאה לאחר הצגה
+  req.session.successMessage = null; // נקה את הודעת ההצלחה לאחר הצגה
+};
+
+exports.getRegisterPage = (req, res) => {
+  res.render('layouts/layout', { 
+    title: 'Registration', 
+    body: '../pages/register',
+    errorMessage: req.flash('error') || null ,
+    successMessage: req.flash('success') || null 
+  });
 };
 
 exports.getProductsPage = async (req, res) => {
     try {
-      const minPrice = req.query.minPrice || 0;   // Default to 0 if not provided
-      const maxPrice = req.query.maxPrice || 10000; // Default to a large value if not provided
+      const minPrice = req.query.minPrice || 0;   
+      const maxPrice = req.query.maxPrice || 10000; 
       
       const products = await Product.find({
         price: { $gte: minPrice, $lte: maxPrice }
       });
   
-      // Pass the layout and body as well as the other data
       res.render('layouts/layout', {
         title: 'Product List', 
-        body: '../pages/products', // Correct path to the products page
+        body: '../pages/products', 
         products, 
         minPrice,  
         maxPrice    
@@ -45,12 +56,4 @@ exports.getProductsPage = async (req, res) => {
       body: '../pages/cart'
  
     });
-};
-
-exports.getRegisterPage = (req, res) => {
-  res.render('layouts/layout', { 
-    title: 'Registration', 
-    body: '../pages/register',
-    errorMessage: req.query.errorMessage || null // אם הודעת השגיאה קיימת ב-query
-  });
 };

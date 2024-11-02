@@ -4,9 +4,6 @@ const Product = require('../models/productModel');
 exports.createProduct = async (req, res) => {
   try {
     const { name, price, screenType, description ,image} = req.body;
-    
-
-
     const product = new Product({
       name,
       price,
@@ -27,20 +24,12 @@ exports.updateProduct = async (req, res) => {
   try {
     const { name, price, screenType, description } = req.body;
 
-    // אם משתמש מעלה תמונה חדשה, שמור את הנתיב שלה
-    const image = req.file ? req.file.path : undefined;
-
     const updateData = {
       name,
       price,
       screenType,
       description,
     };
-
-    // אם יש תמונה חדשה, עדכן גם את שדה ה-image
-    if (image) {
-      updateData.image = image;
-    }
 
     const product = await Product.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
@@ -71,16 +60,7 @@ exports.deleteProduct = async (req, res) => {
 };
 
 // קיבוץ מוצרים לפי סוג המסך והצגת המחיר הממוצע
-exports.getAveragePriceByScreenType = async (req, res) => {
-  try {
-    const result = await Product.aggregate([
-      { $group: { _id: '$screenType', averagePrice: { $avg: '$price' } } }
-    ]);
-    res.status(200).json({ success: true, data: result });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-};
+
 
 exports.filterProducts = async (req, res) => {
   const minPrice = req.query.minPrice || 0;
@@ -97,3 +77,13 @@ exports.filterProducts = async (req, res) => {
   });
 };
 
+exports.getAveragePriceByScreenType = async (req, res) => {
+  try {
+    const result = await Product.aggregate([
+      { $group: { _id: '$screenType', averagePrice: { $avg: '$price' } } }
+    ]);
+    res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};

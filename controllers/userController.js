@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 // פונקציה להרשמת משתמש חדש (Registration)
 exports.register = async (req, res) => {
   const { username, password } = req.body;
-
+console.log(username);
   try {
     // בדיקה אם המשתמש כבר קיים
     const userExists = await User.findOne({ username });
@@ -30,6 +30,145 @@ exports.register = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.login = async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ errorMessage: 'User not found' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ errorMessage: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.cookie('token', token, { httpOnly: true });
+    return res.status(200).json({ successMessage: 'Login successful' });
+  } catch (err) {
+    return res.status(500).json({ errorMessage: 'An error occurred. Please try again later.' });
+  }
+};
+
+
+// exports.login = async (req, res) => {
+//   try {
+//     const user = await User.findOne({ username });
+//     if (!user) {
+//       res.locals.errorMessage = 'User not found'; // הגדרת הודעת שגיאה ב-res.locals
+//       return res.redirect('/login');
+//     }
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       res.locals.errorMessage = 'Invalid credentials'; // הגדרת הודעת שגיאה ב-res.locals
+//       return res.redirect('/login');
+//     }
+
+//     const token = jwt.sign(
+//       { userId: user._id, isAdmin: user.isAdmin },
+//       process.env.JWT_SECRET,
+//       { expiresIn: '1h' }
+//     );
+
+//     res.cookie('token', token, { httpOnly: true });
+//     res.locals.successMessage = 'Login successful'; // הודעת הצלחה
+//     res.redirect('/');
+//   } catch (err) {
+//     res.locals.errorMessage = 'An error occurred. Please try again later.';
+//     res.redirect('/login');
+//   }
+// };
+
+
+// exports.login = async (req, res) => {
+//   const { username, password } = req.body;
+
+//   try {
+//     const user = await User.findOne({ username });
+//     if (!user) {
+//       return res.status(400).render('login', { errorMessage: 'User not found' });
+//     }
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       return res.status(400).render('login', { errorMessage: 'Invalid credentials' });
+//     }
+
+//     // יצירת JWT
+//     const token = jwt.sign(
+//       { userId: user._id, isAdmin: user.isAdmin },
+//       process.env.JWT_SECRET,
+//       { expiresIn: '1h' }
+//     );
+
+//     res.cookie('token', token, { httpOnly: true });
+//     res.redirect('/'); // ניתוב לעמוד הבית לאחר התחברות מוצלחת
+//   } catch (err) {
+//     return res.status(500).render('login', { errorMessage: 'An error occurred. Please try again later.' });
+//   }
+// };
+
+
+
+
+
+// מחיקת משתמש לפי ID (Admin בלבד)
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ success: true, message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+exports.updateUser = async (req, res) => {
+  try {
+    const { username, email, isAdmin, password } = req.body;
+
+    const updateData = { username, email, isAdmin };
+
+    if (password) {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordRegex.test(password)) {
+        return res.status(400).json({
+          error: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@, $, !, %, *, ?, &), and be at least 8 characters long.'
+        });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      updateData.password = hashedPassword;
+    }
+
+    const user = await User.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ success: true, data: user });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 
 // פונקציה להתחברות משתמשים (Login)
 // exports.login = async (req, res) => {
@@ -136,58 +275,3 @@ exports.register = async (req, res) => {
 //     return res.status(500).json({ errorMessage: 'An error occurred. Please try again later.' });
 //   }
 // };
-
-exports.login = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ errorMessage: 'User not found' });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ errorMessage: 'Invalid credentials' });
-    }
-
-    // יצירת ה-JWT
-    const token = jwt.sign(
-      { userId: user._id, isAdmin: user.isAdmin },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    // שליחת הטוקן ללקוח
-    res.status(200).json({ token, message: 'Login successful' });
-  } catch (err) {
-    return res.status(500).json({ errorMessage: 'An error occurred. Please try again later.' });
-  }
-};
-
-
-// מחיקת משתמש לפי ID (Admin בלבד)
-exports.deleteUser = async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.status(200).json({ success: true, message: 'User deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-// יצירת Admin חדש
-exports.createAdmin = async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    const user = new User({ username, password, isAdmin: true });
-    await user.save();
-    res.status(201).json({ success: true, data: user });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
