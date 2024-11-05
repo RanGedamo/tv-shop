@@ -1,5 +1,7 @@
 const Product = require('../models/productModel');
 
+
+
 // יצירת מוצר חדש
 exports.createProduct = async (req, res) => {
   try {
@@ -9,7 +11,7 @@ exports.createProduct = async (req, res) => {
       price,
       screenType,
       description,
-      image // שמירת הנתיב של התמונה במסד הנתונים
+      image 
     });
 
     await product.save();
@@ -61,21 +63,40 @@ exports.deleteProduct = async (req, res) => {
 
 // קיבוץ מוצרים לפי סוג המסך והצגת המחיר הממוצע
 
+// exports.getAllProductsData = async (req, res) => {
+//   try {
+//     const products = await Product.find(); // מחזיר את כל המוצרים
+//     res.status(200).json({ success: true, data: products });
+//   } catch (error) {
+//     console.error('Error fetching products:', error);
+//     res.status(500).json({ success: false, message: 'Error fetching products' });
+//   }
+// };
 
 exports.filterProducts = async (req, res) => {
   const minPrice = req.query.minPrice || 0;
   const maxPrice = req.query.maxPrice || 99999;
-  const products = await Product.find({
-    price: { $gte: minPrice, $lte: maxPrice }
-  });
-  res.render('layouts/layout', {
-    title: 'Product List', 
-    body: '../pages/products', // הטמעת הדף של המוצרים ב-layout
-    products, 
-    minPrice,  
-    maxPrice    
-  });
+  
+  try {
+    const products = await Product.find({
+      price: { $gte: minPrice, $lte: maxPrice }
+    });
+
+    // הצגת המוצרים המסוננים בעמוד EJS
+    res.render('layouts/layout', {
+      title: 'Filtered Product List',
+      body: '../pages/products',
+      user: req.user || null,
+      products,
+      minPrice,
+      maxPrice,
+    });
+  } catch (error) {
+    console.error('Error fetching filtered products:', error);
+    res.status(500).send('Error fetching filtered products');
+  }
 };
+
 
 exports.getAveragePriceByScreenType = async (req, res) => {
   try {
