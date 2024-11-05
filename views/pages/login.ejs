@@ -1,306 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Page</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css" type="text/css">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" type="text/css" />
+
     <style>
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #2196F3;
-        }
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        #advancedMode {
-            display: none;
-        }
-        .letter-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            margin-bottom: 15px;
-        }
-        .letter-button {
-            width: 40px;
-            height: 40px;
-            font-size: 18px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-        .letter-button:hover {
-            background-color: #e0e0e0;
-        }
-        .input-status {
-            margin-top: 10px;
-            font-size: 14px;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 10px;
-            height: 47px;
-            border-style: inset;
-        }
-        .refresh-button {
-            margin-bottom: 10px;
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .refresh-button:hover {
-            background-color: #45a049;
-        }
-        #passwordStatusBar {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #passwordInputStatus {
-            position: relative;
-            width: 100%;
-        }
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+    .password-container {
+      position: relative;
+    }
+    .input-group-text {
+      cursor: pointer;
+      user-select: none;
+    }
+
     </style>
-</head>
-<body>
-    <div class="login-container">
-        <h2 class="login-title">Login</h2>
-        <div class="form-check form-switch mb-3">
-            <input class="form-check-input" type="checkbox" id="modeSwitch">
-            <label class="form-check-label" for="modeSwitch">Advanced Mode</label>
-        </div>
-    
-        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
-    
-        <form id="login-form">
-            <div class="mb-3">
-                <label for="username" class="form-label">username</label>
-                <input type="text" class="form-control" id="username" name="username" required placeholder="Enter your username">
+  </head>
+  <body>
+    <div class="container">
+      <h2 id="login-title" class="login-title">Login</h2>
+      <% if (errorMessage) { %>
+      <div id="error-message" class="alert alert-danger">
+        <%= errorMessage %>
+      </div>
+      <% } else if (successMessage) { %>
+      <div id="error-message" class="alert alert-success">
+        <%= successMessage %>
+      </div>
+      <% } else { %>
+      <div id="error-message" style="display: none"></div>
+      <% } %>
+
+      <!-- Login Form Section -->
+      <div id="login-section">
+        <form id="login-form" method="POST">
+          <div class="mb-4">
+            <label for="username" class="form-label">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="username"
+              name="username"
+              required
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="mb-4 password-container">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                required
+                placeholder="Enter your password"
+              />
+              <span
+                class="input-group-text password-toggle"
+                onclick="togglePasswordVisibility('password', this)"
+              >
+                👁️
+              </span>
             </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required placeholder="Enter your password">
-            </div>
-            <button type="submit" class="btn-login">Login</button>
+          </div>
+          <button type="submit" class="btn-login mb-3">Login</button>
         </form>
-
-        <div id="advancedMode">
-            <h3>Advanced Login</h3>
-            <button id="refreshGrids" class="refresh-button">Refresh Letters</button>
-            <div id="usernameGrid" class="letter-grid"></div>
-            <div>Username</div>
-            <div id="usernameInputStatus" class="input-status"></div>
-            <div id="passwordGrid" class="letter-grid"></div>
-            <div>Password</div>
-            <div id="passwordStatusBar">
-                <div id="passwordInputStatus" class="input-status"></div>
-                <button type="button" class="btn btn-light" id="togglePasswordAdvanced">👁️</button>
-            </div>
-            <button id="advancedLogin" class="btn-login mt-3">Login</button>
+        <div class="mt-3 text-center">
+          <a href="#" class="text-decoration-none" onclick="showForgotPassword()">Forgot your password?</a>
+          <br />
+          <a href="/register" class="text-decoration-none">Don't have an account? Register here</a>
         </div>
-
-        <div class="forgot-password">
-            <a href="/forgot-password">Forgot your password?</a>
-        </div>
-        <div class="register-link">
-            <p>Don't have an account? <a href="/register">Register here</a></p>
-        </div>
-    </div>
-    
+      </div>
+      
+    <script src="/loginPage.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-
-        const modeSwitch = document.getElementById('modeSwitch');
-        const simpleForm = document.getElementById('login-form');
-        const advancedMode = document.getElementById('advancedMode');
-        const usernameGrid = document.getElementById('usernameGrid');
-        const passwordGrid = document.getElementById('passwordGrid');
-        const advancedLogin = document.getElementById('advancedLogin');
-        const usernameInputStatus = document.getElementById('usernameInputStatus');
-        const passwordInputStatus = document.getElementById('passwordInputStatus');
-        const refreshGrids = document.getElementById('refreshGrids');
-        const togglePasswordAdvanced = document.getElementById('togglePasswordAdvanced');
-
-        let username = '';
-        let password = '';
-        let passwordVisible = false;
-
-        modeSwitch.addEventListener('change', function() {
-            if (this.checked) {
-                simpleForm.style.display = 'none';
-                advancedMode.style.display = 'block';
-                initAdvancedMode();
-            } else {
-                simpleForm.style.display = 'block';
-                advancedMode.style.display = 'none';
-            }
-        });
-
-        refreshGrids.addEventListener('click', initAdvancedMode);
-
-        togglePasswordAdvanced.addEventListener('click', function() {
-            passwordVisible = !passwordVisible;
-            updateInputStatus();
-        });
-
-        function initAdvancedMode() {
-            const letters = 'abdcefghijklmnpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            usernameGrid.innerHTML = '';
-            passwordGrid.innerHTML = '';
-            username = '';
-            password = '';
-            
-            for (let i = 0; i < 25; i++) {
-                const button = document.createElement('button');
-                button.className = 'letter-button';
-                button.textContent = letters[Math.floor(Math.random() * letters.length)];
-                button.onclick = () => addToField('username', button.textContent);
-                usernameGrid.appendChild(button);
-            }
-
-            for (let i = 0; i < 25; i++) {
-                const button = document.createElement('button');
-                button.className = 'letter-button';
-                button.textContent = letters[Math.floor(Math.random() * letters.length)];
-                button.onclick = () => addToField('password', button.textContent);
-                passwordGrid.appendChild(button);
-            }
-
-            updateInputStatus();
-        }
-
-        function addToField(field, letter) {
-            if (field === 'username') {
-                username += letter;
-            } else {
-                password += letter;
-            }
-            updateInputStatus();
-        }
-
-        function updateInputStatus() {
-            usernameInputStatus.textContent = `${username}`;
-            if (passwordVisible) {
-                passwordInputStatus.textContent = password;
-            } else {
-                passwordInputStatus.textContent = '*'.repeat(password.length);
-            }
-        }
-
-        simpleForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            await attemptLogin(
-                document.getElementById('username').value,
-                document.getElementById('password').value
-            );
-        });
-
-        advancedLogin.addEventListener('click', async function() {
-            await attemptLogin(username, password);
-        });
-
-        async function attemptLogin(username, password) {
-            try {
-                const response = await fetch('/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('username', username);
-
-                    alert('Login successful!');
-                    window.location.href = '/';
-                } else {
-                    const errorMessage = document.getElementById('error-message');
-                    errorMessage.textContent = data.message || 'Login failed. Please try again.';
-                    errorMessage.style.display = 'block';
-                }
-            } catch (error) {
-                const errorMessage = document.getElementById('error-message');
-                errorMessage.textContent = 'An error occurred. Please try again later.';
-                errorMessage.style.display = 'block';
-            }
-        }
-      document.getElementById('login-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        try {
-            const response = await fetch('/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('email', email);
-
-                alert('Login successful!');
-                window.location.href = '/';
-            } else {
-                const errorMessage = document.getElementById('error-message');
-                errorMessage.textContent = data.errorMessage || 'Login failed. Please try again.';
-                errorMessage.style.display = 'block';
-            }
-        } catch (error) {
-            const errorMessage = document.getElementById('error-message');
-            errorMessage.textContent = 'An error occurred. Please try again later.';
-            errorMessage.style.display = 'block';
-        }
-      });
-    </script>
-</body>
+  </body>
 </html>
