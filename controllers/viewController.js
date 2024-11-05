@@ -1,59 +1,72 @@
 const Product = require('../models/productModel');
 
+
 exports.getHomePage = (req, res) => {
-    res.render('layouts/layout', { 
-      title: 'Home Page', 
-      body: '../pages/index'
- 
-    });
+  console.log("User info:", req.user); // הדפסה לבדוק אם יש מידע על המשתמש
+
+  res.render('layouts/layout', { 
+    title: 'Home Page', 
+    body: '../pages/index',
+    user: req.user || null // נשלח את המידע על המשתמש אם הוא קיים
+  });
 };
-// בשרת
+
 exports.getLoginPage = (req, res) => {
   res.render('layouts/layout', { 
     title: 'Login Page',
     body: '../pages/login',
-    errorMessage: req.session.errorMessage || null,
-    successMessage: req.session.successMessage || null
+    user: req.user || null, // נשלח את המידע על המשתמש אם הוא קיים
+    errorMessage: null,
+    successMessage: null
   });
-  req.session.errorMessage = null; // נקה את הודעת השגיאה לאחר הצגה
-  req.session.successMessage = null; // נקה את הודעת ההצלחה לאחר הצגה
 };
 
 exports.getRegisterPage = (req, res) => {
   res.render('layouts/layout', { 
     title: 'Registration', 
     body: '../pages/register',
-    errorMessage: req.flash('error') || null ,
-    successMessage: req.flash('success') || null 
+    user: req.user || null, // נשלח את המידע על המשתמש אם הוא קיים
+    errorMessage: null, 
+    successMessage: null 
   });
 };
 
-exports.getProductsPage = async (req, res) => {
-    try {
-      const minPrice = req.query.minPrice || 0;   
-      const maxPrice = req.query.maxPrice || 10000; 
-      
-      const products = await Product.find({
-        price: { $gte: minPrice, $lte: maxPrice }
-      });
-  
-      res.render('layouts/layout', {
-        title: 'Product List', 
-        body: '../pages/products', 
-        products, 
-        minPrice,  
-        maxPrice    
-      });
-    } catch (error) {
-      res.status(500).send('Error fetching products');
-    }
-  };
+exports.getDashboardPage = (req, res) => {
+  const totalProducts = 50; // נתון סטטי לדוגמה
+  const totalSales = 120; // נתון סטטי לדוגמה
+  const revenue = 25000; // נתון סטטי לדוגמה
 
-  
-  exports.getCartPage = (req, res) => {
-    res.render('layouts/layout', { 
-      title: 'Home Page', 
-      body: '../pages/cart'
- 
-    });
+  res.render('layouts/layout', {
+    title: 'Admin Dashboard',
+    body: '../pages/dashboard',
+    user: req.user || null, // נשלח את המידע על המשתמש אם הוא קיים
+    totalProducts,
+    totalSales,
+    revenue
+  });
+};
+exports.getProductsPage = (req, res) => {
+  res.render('layouts/layout', {
+    title: 'Product List',
+    body: '../pages/products',
+    user: req.user || null,
+    products: [], // נתחיל עם מערך ריק של מוצרים
+    minPrice: 0,
+    maxPrice: 99999,
+  });
+};
+
+exports.getCartPage = (req, res) => {
+  res.render('layouts/layout', { 
+    title: 'Cart Page', 
+
+    body: '../pages/cart',
+    user: req.user || null // נשלח את המידע על המשתמש אם הוא קיים
+  });
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie('accessToken'); // ניקוי הטוקן מהעוגיה
+  res.clearCookie('refreshToken'); // ניקוי טוקן הרענון מהעוגיה, אם קיים
+  res.redirect('/login'); // הפניית המשתמש לעמוד ההתחברות
 };
