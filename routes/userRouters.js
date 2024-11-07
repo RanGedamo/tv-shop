@@ -12,8 +12,8 @@ router.post('/refresh-token', authController.refreshToken);
 router.post('/register', registerValidation, userController.register);
 router.post('/login', loginValidation, userController.login);
 
-router.post('/forgot-password', authController.forgotPassword);
-router.post('/reset-password', authController.resetPassword);
+// router.post('/forgot-password', authController.forgotPassword);
+// router.post('/reset-password', authController.resetPassword);
 
 // נתיבים לניהול משתמשים
 router.delete('/:id', userController.deleteUser);

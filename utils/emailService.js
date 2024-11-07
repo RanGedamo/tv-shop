@@ -12,15 +12,21 @@ function createTransporter(email) {
         user: process.env.WALLA_EMAIL_USER, // שם משתמש עבור Walla
         pass: process.env.WALLA_EMAIL_PASS, // סיסמה עבור Walla
       },
+      connectionTimeout: 10000, // מגבלת זמן של 10 שניות
+      debug: true, // למטרות דיאגנוסטיקה
     });
   } else {
     // הגדרות עבור Gmail
     return nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // true עבור SSL עם פורט 465
       auth: {
         user: process.env.GMAIL_EMAIL_USER, // שם משתמש עבור Gmail
-        pass: process.env.GMAIL_EMAIL_PASS, // סיסמה עבור Gmail
+        pass: process.env.GMAIL_EMAIL_PASS, // סיסמת אפליקציה עבור Gmail אם מופעל אימות דו-שלבי
       },
+      connectionTimeout: 10000, // מגבלת זמן של 10 שניות
+      debug: true, // למטרות דיאגנוסטיקה
     });
   }
 }
@@ -41,31 +47,9 @@ async function sendVerificationEmail(email, otp) {
     await transporter.sendMail(mailOptions);
     console.log(`Verification code sent to ${email}`);
   } catch (error) {
-    console.error('Error sending verification email:', error);
+    console.error('Error sending verification email:', error.message);
     throw new Error('Failed to send verification email');
   }
 }
 
-// פונקציה לשליחת אימייל לאיפוס סיסמה
-async function sendResetPasswordEmail(email, resetToken) {
-  const transporter = createTransporter(email);
-
-  const resetUrl = `http://localhost:${process.env.PORT}.com/reset-password?token=${resetToken}`;
-  const mailOptions = {
-    from: email.endsWith('@walla.co.il') ? process.env.WALLA_EMAIL_USER : process.env.GMAIL_EMAIL_USER,
-    to: email,
-    subject: 'Password Reset Request',
-    text: `You requested to reset your password. Click the link to reset: ${resetUrl}`,
-    html: `<p>You requested to reset your password.</p><p>Click the link to reset: <a href="${resetUrl}">Reset Password</a></p>`,
-  };
-
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log(`Password reset email sent to ${email}`);
-  } catch (error) {
-    console.error('Error sending password reset email:', error);
-    throw new Error('Failed to send password reset email');
-  }
-}
-
-module.exports = { sendVerificationEmail, sendResetPasswordEmail };
+module.exports = { sendVerificationEmail };
