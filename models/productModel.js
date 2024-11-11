@@ -9,7 +9,11 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  screenType: {
+  brand: { // שדה למותג
+    type: String,
+    required: true,
+  },
+  screenType: { // שדה לסוג המסך
     type: String,
     required: true,
   },
@@ -20,7 +24,10 @@ const productSchema = new mongoose.Schema({
   image: {
     type: String,
     required: true,
-  
+  },
+  size: {
+    type: String, // או Number אם המידה היא מספרית
+    required: true,
   },
   createdAt: {
     type: Date,

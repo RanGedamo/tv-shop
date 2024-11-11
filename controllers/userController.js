@@ -10,7 +10,6 @@ exports.register = async (req, res) => {
   try {
     const userExists = await User.findOne({ username });
     if (userExists) {
-      console.log(userExists);
       return res.status(400).json({ error: 'Username already exists' });
     }
 
@@ -22,11 +21,9 @@ exports.register = async (req, res) => {
     });
     await user.save();
 
-    // יצירת טוקן גישה
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    // שליחת הטוקנים בעוגיות מאובטחות
     setTokens(res, accessToken, refreshToken);
 
     res.status(201).json({ success: 'Registration successful' });
@@ -35,6 +32,7 @@ exports.register = async (req, res) => {
     res.status(500).json({ error: 'An error occurred. Please try again later.' });
   }
 };
+
 // התחברות משתמש
 exports.login = async (req, res) => {
   const { username, password } = req.body;
@@ -61,9 +59,6 @@ exports.login = async (req, res) => {
   }
 };
 
-
-
-
 // מחיקת משתמש לפי ID (Admin בלבד)
 exports.deleteUser = async (req, res) => {
   try {
@@ -77,11 +72,9 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-
 exports.updateUser = async (req, res) => {
   try {
     const { username, email, isAdmin, password } = req.body;
-
     const updateData = { username, email, isAdmin };
 
     if (password) {
@@ -93,8 +86,7 @@ exports.updateUser = async (req, res) => {
       }
 
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      updateData.password = hashedPassword;
+      updateData.password = await bcrypt.hash(password, salt);
     }
 
     const user = await User.findByIdAndUpdate(req.params.id, updateData, {
