@@ -1,66 +1,238 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css" type="text/css">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-</head>
-<body>
-    <div class="container">
-        <h1 class="my-4">Product List</h1>
+<style>
+  /* General Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-        <!-- טופס הסינון נשאר כמו שהוא -->
-        <form action="/products/filter" method="GET" class="form-inline">
-            <div class="form-group">
-                <label for="minPrice" class="form-label">Minimum Price</label>
-                <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Min Price" value="<%= minPrice || 0 %>">
-            </div>
-            <div class="form-group">
-                <label for="maxPrice" class="form-label">Maximum Price</label>
-                <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Max Price" value="<%= maxPrice || 10000 %>">
-            </div>
-            <button type="submit" class="btn btn-primary mb-2">Filter</button>
-        </form>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+  }
 
-        <!-- איזור המוצרים, שיתעדכן בעזרת JavaScript -->
-        <div class="row" id="products-container"></div>
+  /* Navbar */
+  .navbar {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .navbar h1 {
+    margin: 0;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+  }
+
+  .nav-links li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .nav-links li a:hover {
+    text-decoration: underline;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+
+  /* Products Grid */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .product-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.3s;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .product-image {
+    max-width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+  }
+
+  .product-name {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .product-brand,
+  .product-screen,
+  .product-price {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+  }
+
+  .product-description {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 10px;
+  }
+
+  .add-to-cart {
+    background-color: #5a67d8;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+  }
+
+  .add-to-cart:hover {
+    background-color: #434190;
+  }
+
+  /* Footer */
+  footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 20px;
+  }
+</style>
+
+<section class="container my-5">
+  <h2 class="text-center mb-4">Our Products</h2>
+  <div class="row">
+    <% if (products.length > 0) { %> <% products.forEach(product => { %>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <img
+          src="<%= product.image %>"
+          class="card-img-top"
+          alt="<%= product.name %>"
+        />
+        <div class="card-body">
+          <h5 class="card-title"><%= product.name %></h5>
+          <p class="card-text">Brand: <%= product.brand %></p>
+          <p class="card-text">Screen Type: <%= product.screenType %></p>
+          <p class="card-text">Price: $<%= product.price %></p>
+          <p class="card-text"><%= product.description %></p>
+          <!-- שימוש ב-data attributes -->
+          <button
+            class="btn btn-primary add-to-cart"
+            data-id="<%= product._id %>"
+            data-name="<%= product.name %>"
+            data-brand="<%= product.brand %>"
+            data-screen-type="<%= product.screenType %>"
+            data-price="<%= product.price %>"
+            data-description="<%= product.description %>"
+            data-image="<%= product.image %>"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
     </div>
+    <% }); %> <% } else { %>
+    <p class="text-center">No products found.</p>
+    <% } %>
+  </div>
+</section>
 
-    <!-- Include jQuery and jQuery UI -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-        // שליחת בקשת AJAX לאחר טעינת העמוד
-        $(document).ready(function() {
-            $.get('/products/data', function(response) {
-                if (response.success) {
-                    const products = response.data;
-                    const container = $('#products-container');
-                    products.forEach(product => {
-                        const productCard = `
-                            <div class="col-md-4">
-                                <div class="card mb-4">
-                                    <img class="card-img-top" src="${product.image}" alt="${product.name}" style="height: 200px; object-fit: cover;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${product.name}</h5>
-                                        <p class="card-text"><strong>Price:</strong> ₪${product.price}</p>
-                                        <p class="card-text"><strong>Screen Type:</strong> ${product.screenType}</p>
-                                        <p class="card-text">${product.description}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        container.append(productCard);
-                    });
-                } else {
-                    console.error('Failed to fetch products');
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+  updateCartCount(); // עדכון הכמות בעגלה בעת טעינת הדף
+
+  // מאזינים לכל כפתורי "Add to Cart"
+  document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', async function() {
+      const productId = this.getAttribute('data-id');
+      const productName = this.getAttribute('data-name');
+      const productBrand = this.getAttribute('data-brand');
+      const productScreenType = this.getAttribute('data-screen-type');
+      const productPrice = this.getAttribute('data-price');
+      const productDescription = this.getAttribute('data-description');
+      const productImage = this.getAttribute('data-image');
+
+      // קריאה לפונקציה להוספת מוצר
+      await addToCart(productId, productName, productBrand, productScreenType, productPrice, productDescription, productImage);
+    });
+  });
+
+  // פונקציה להוספת מוצר ל-Local Storage ולשלוח את הבקשה לשרת
+  async function addToCart(productId, productName, productBrand, productScreenType, productPrice, productDescription, productImage) {
+    const product = {
+      id: productId,
+      name: productName,
+      brand: productBrand,
+      screenType: productScreenType,
+      price: productPrice,
+      description: productDescription,
+      image: productImage
+    };
+
+    // הוספת המוצר לעגלה ב-Local Storage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.push(product);
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // שליחה לשרת בנתיב /cart/add
+    try {
+      const response = await fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ productId })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        updateCartCount(data.cartItemCount); // עדכון הכמות בעגלה
+        alert("המוצר נוסף לעגלה!");
+      } else {
+        alert("שגיאה בהוספת המוצר לעגלה");
+      }
+    } catch (error) {
+      console.error("שגיאה:", error);
+    }
+  }
+
+  // פונקציה לעדכון הכמות בעגלה
+  function updateCartCount(count = null) {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const cartCount = cart.length;
+    const cartCountElement = document.getElementById('cart-count');
+
+    if (cartCount > 0) {
+      cartCountElement.textContent = cartCount;
+      cartCountElement.style.display = 'inline'; // הצגת העיגול האדום
+    } else {
+      cartCountElement.style.display = 'none'; // הסתרת העיגול האדום
+    }
+  }
+});
+
+</script>

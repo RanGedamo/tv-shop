@@ -45,16 +45,22 @@ exports.getDashboardPage = (req, res) => {
     revenue
   });
 };
-exports.getProductsPage = (req, res) => {
-  res.render('layouts/layout', {
-    title: 'Product List',
-    body: '../pages/products',
-    user: req.user || null,
-    products: [], // נתחיל עם מערך ריק של מוצרים
-    minPrice: 0,
-    maxPrice: 99999,
-  });
+exports.getProductsPage = async (req, res) => {
+  try {
+    const products = await Product.find(); // שליפת כל המוצרים מהמסד
+    res.render('layouts/layout', { 
+      title: 'Products Page',
+      body: '../pages/products',
+      products,
+      user: req.user || null 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading the products page");
+  }
 };
+
+
 
 exports.getCartPage = (req, res) => {
   res.render('layouts/layout', { 
@@ -64,7 +70,15 @@ exports.getCartPage = (req, res) => {
     user: req.user || null // נשלח את המידע על המשתמש אם הוא קיים
   });
 };
-
+exports.getShopPage = async (req, res) => {
+  try {
+      const products = await Product.find(); // שליפת כל המוצרים מבסיס הנתונים
+      res.render('shop', { products });
+  } catch (err) {
+      console.error(err);
+      res.status(500).send("Error loading the shop page");
+  }
+};
 exports.logout = (req, res) => {
   res.clearCookie('accessToken'); // ניקוי הטוקן מהעוגיה
   res.clearCookie('refreshToken'); // ניקוי טוקן הרענון מהעוגיה, אם קיים
